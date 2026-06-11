@@ -1,0 +1,521 @@
+{
+  "info": {
+    "name": "Biblioteca Digital — GraphQL + REST",
+    "description": "Coleção completa de endpoints do ms-gaphql (porta 8088).\n\nPré-requisitos:\n- App rodando em http://localhost:8088\n- PostgreSQL em localhost:5432 com banco 'biblioteca_digital'\n\nOrganização:\n1. GraphQL — Queries   (14 operações)\n2. GraphQL — Mutations (10 operações)\n3. REST — Exportação   (3 endpoints)\n4. REST — Cliente      (4 endpoints)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8088",
+      "type": "string",
+      "description": "URL base do servidor"
+    }
+  ],
+  "item": [
+    {
+      "name": "GraphQL — Queries",
+      "description": "Todas as queries de leitura do schema GraphQL",
+      "item": [
+        {
+          "name": "01 — Listar todos os autores",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query {\n  authors {\n    id\n    name\n    nationality\n    birthDate\n    biography\n    email\n  }\n}",
+                "variables": ""
+              }
+            },
+            "url": { "raw": "{{baseUrl}}/graphql", "host": ["{{baseUrl}}"], "path": ["graphql"] },
+            "description": "Retorna todos os autores cadastrados com todos os campos."
+          }
+        },
+        {
+          "name": "02 — Buscar autor por ID",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query AuthorById($id: ID!) {\n  authorById(id: $id) {\n    id\n    name\n    nationality\n    birthDate\n    biography\n    email\n  }\n}",
+                "variables": "{\n  \"id\": \"1\"\n}"
+              }
+            },
+            "url": { "raw": "{{baseUrl}}/graphql", "host": ["{{baseUrl}}"], "path": ["graphql"] },
+            "description": "Busca um autor pelo ID. Retorna null se não encontrado."
+          }
+        },
+        {
+          "name": "03 — Autores por nacionalidade",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query AuthorsByNationality($nationality: String!) {\n  authorsByNationality(nationality: $nationality) {\n    id\n    name\n    nationality\n    birthDate\n    email\n  }\n}",
+                "variables": "{\n  \"nationality\": \"Brasileira\"\n}"
+              }
+            },
+            "url": { "raw": "{{baseUrl}}/graphql", "host": ["{{baseUrl}}"], "path": ["graphql"] },
+            "description": "Filtra autores por nacionalidade (ex: Brasileira, Britânica, Colombiana)."
+          }
+        },
+        {
+          "name": "04 — Listar todos os livros",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query {\n  books {\n    id\n    title\n    isbn\n    publishYear\n    synopsis\n    genre\n    available\n    author {\n      id\n      name\n      nationality\n    }\n  }\n}",
+                "variables": ""
+              }
+            },
+            "url": { "raw": "{{baseUrl}}/graphql", "host": ["{{baseUrl}}"], "path": ["graphql"] },
+            "description": "Retorna todos os livros com dados do autor embutidos."
+          }
+        },
+        {
+          "name": "05 — Buscar livro por ID",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query BookById($id: ID!) {\n  bookById(id: $id) {\n    id\n    title\n    isbn\n    publishYear\n    synopsis\n    genre\n    available\n    author {\n      id\n      name\n      nationality\n      birthDate\n      email\n    }\n  }\n}",
+                "variables": "{\n  \"id\": \"1\"\n}"
+              }
+            },
+            "url": { "raw": "{{baseUrl}}/graphql", "host": ["{{baseUrl}}"], "path": ["graphql"] },
+            "description": "Busca livro pelo ID com dados completos do autor."
+          }
+        },
+        {
+          "name": "06 — Buscar livro por ISBN",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query BookByIsbn($isbn: String!) {\n  bookByIsbn(isbn: $isbn) {\n    id\n    title\n    isbn\n    publishYear\n    genre\n    available\n    author { id name }\n  }\n}",
+                "variables": "{\n  \"isbn\": \"9788535914849\"\n}"
+              }
+            },
+            "url": { "raw": "{{baseUrl}}/graphql", "host": ["{{baseUrl}}"], "path": ["graphql"] },
+            "description": "Busca livro pelo ISBN (13 dígitos). ISBN de exemplo: Cem Anos de Solidão."
+          }
+        },
+        {
+          "name": "07 — Livros por gênero",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query BooksByGenre($genre: Genre!) {\n  booksByGenre(genre: $genre) {\n    id\n    title\n    isbn\n    publishYear\n    available\n    author { id name }\n  }\n}",
+                "variables": "{\n  \"genre\": \"ROMANCE\"\n}"
+              }
+            },
+            "url": { "raw": "{{baseUrl}}/graphql", "host": ["{{baseUrl}}"], "path": ["graphql"] },
+            "description": "Filtra livros por gênero.\nValores válidos: ROMANCE, SCIENCE_FICTION, FANTASY, MYSTERY, THRILLER, BIOGRAPHY, HISTORY, PHILOSOPHY, TECHNOLOGY, SELF_HELP, POETRY, CHILDREN"
+          }
+        },
+        {
+          "name": "08 — Livros disponíveis",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query {\n  availableBooks {\n    id\n    title\n    isbn\n    genre\n    available\n    author { id name }\n  }\n}",
+                "variables": ""
+              }
+            },
+            "url": { "raw": "{{baseUrl}}/graphql", "host": ["{{baseUrl}}"], "path": ["graphql"] },
+            "description": "Lista apenas os livros com available=true (sem empréstimos ativos)."
+          }
+        },
+        {
+          "name": "09 — Livros por autor",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query BooksByAuthor($authorId: ID!) {\n  booksByAuthor(authorId: $authorId) {\n    id\n    title\n    isbn\n    publishYear\n    genre\n    available\n  }\n}",
+                "variables": "{\n  \"authorId\": \"4\"\n}"
+              }
+            },
+            "url": { "raw": "{{baseUrl}}/graphql", "host": ["{{baseUrl}}"], "path": ["graphql"] },
+            "description": "Lista livros de um autor específico. authorId=4 é Machado de Assis."
+          }
+        },
+        {
+          "name": "10 — Listar todos os empréstimos",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query {\n  loans {\n    id\n    bookId\n    bookTitle\n    memberName\n    memberEmail\n    loanDate\n    expectedReturnDate\n    actualReturnDate\n    status\n  }\n}",
+                "variables": ""
+              }
+            },
+            "url": { "raw": "{{baseUrl}}/graphql", "host": ["{{baseUrl}}"], "path": ["graphql"] },
+            "description": "Retorna todos os empréstimos com status atual."
+          }
+        },
+        {
+          "name": "11 — Buscar empréstimo por ID",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query LoanById($id: ID!) {\n  loanById(id: $id) {\n    id\n    bookId\n    bookTitle\n    memberName\n    memberEmail\n    loanDate\n    expectedReturnDate\n    actualReturnDate\n    status\n  }\n}",
+                "variables": "{\n  \"id\": \"2\"\n}"
+              }
+            },
+            "url": { "raw": "{{baseUrl}}/graphql", "host": ["{{baseUrl}}"], "path": ["graphql"] },
+            "description": "Busca empréstimo pelo ID."
+          }
+        },
+        {
+          "name": "12 — Empréstimos por membro",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query LoansByMember($email: String!) {\n  loansByMember(email: $email) {\n    id\n    bookTitle\n    loanDate\n    expectedReturnDate\n    status\n  }\n}",
+                "variables": "{\n  \"email\": \"carlos.lima@email.com\"\n}"
+              }
+            },
+            "url": { "raw": "{{baseUrl}}/graphql", "host": ["{{baseUrl}}"], "path": ["graphql"] },
+            "description": "Busca empréstimos pelo email do membro."
+          }
+        },
+        {
+          "name": "13 — Empréstimos por status",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query LoansByStatus($status: LoanStatus!) {\n  loansByStatus(status: $status) {\n    id\n    bookTitle\n    memberName\n    loanDate\n    expectedReturnDate\n    status\n  }\n}",
+                "variables": "{\n  \"status\": \"ACTIVE\"\n}"
+              }
+            },
+            "url": { "raw": "{{baseUrl}}/graphql", "host": ["{{baseUrl}}"], "path": ["graphql"] },
+            "description": "Filtra empréstimos por status.\nValores válidos: ACTIVE, RETURNED, OVERDUE, CANCELLED"
+          }
+        },
+        {
+          "name": "14 — Empréstimos vencidos",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query {\n  overdueLoans {\n    id\n    bookTitle\n    memberName\n    memberEmail\n    loanDate\n    expectedReturnDate\n    status\n  }\n}",
+                "variables": ""
+              }
+            },
+            "url": { "raw": "{{baseUrl}}/graphql", "host": ["{{baseUrl}}"], "path": ["graphql"] },
+            "description": "Lista empréstimos com status OVERDUE (data de devolução ultrapassada)."
+          }
+        }
+      ]
+    },
+    {
+      "name": "GraphQL — Mutations",
+      "description": "Todas as mutations de escrita do schema GraphQL",
+      "item": [
+        {
+          "name": "15 — Criar autor",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation CreateAuthor($input: CreateAuthorInput!) {\n  createAuthor(input: $input) {\n    id\n    name\n    nationality\n    birthDate\n    biography\n    email\n  }\n}",
+                "variables": "{\n  \"input\": {\n    \"name\": \"Fernando Pessoa\",\n    \"nationality\": \"Portuguesa\",\n    \"birthDate\": \"1888-06-13\",\n    \"biography\": \"Poeta português, criador de heterônimos como Álvaro de Campos e Alberto Caeiro.\",\n    \"email\": \"fpessoa@literatura.pt\"\n  }\n}"
+              }
+            },
+            "url": { "raw": "{{baseUrl}}/graphql", "host": ["{{baseUrl}}"], "path": ["graphql"] },
+            "description": "Cria um novo autor. Campos obrigatórios: name, nationality, birthDate."
+          }
+        },
+        {
+          "name": "16 — Atualizar autor",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation UpdateAuthor($id: ID!, $input: UpdateAuthorInput!) {\n  updateAuthor(id: $id, input: $input) {\n    id\n    name\n    nationality\n    birthDate\n    biography\n    email\n  }\n}",
+                "variables": "{\n  \"id\": \"2\",\n  \"input\": {\n    \"name\": \"Clarice Lispector\",\n    \"nationality\": \"Brasileira\",\n    \"birthDate\": \"1920-12-10\",\n    \"biography\": \"Uma das maiores escritoras da literatura brasileira. Autora de A Hora da Estrela e A Paixão Segundo G.H.\",\n    \"email\": \"clarice@literatura.com.br\"\n  }\n}"
+              }
+            },
+            "url": { "raw": "{{baseUrl}}/graphql", "host": ["{{baseUrl}}"], "path": ["graphql"] },
+            "description": "Atualiza dados de um autor existente pelo ID."
+          }
+        },
+        {
+          "name": "17 — Excluir autor",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation DeleteAuthor($id: ID!) {\n  deleteAuthor(id: $id)\n}",
+                "variables": "{\n  \"id\": \"6\"\n}"
+              }
+            },
+            "url": { "raw": "{{baseUrl}}/graphql", "host": ["{{baseUrl}}"], "path": ["graphql"] },
+            "description": "Remove um autor pelo ID. Retorna true se removido com sucesso.\nAtenção: execute a mutation 'Criar autor' primeiro para criar o id=6."
+          }
+        },
+        {
+          "name": "18 — Criar livro",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation CreateBook($input: CreateBookInput!) {\n  createBook(input: $input) {\n    id\n    title\n    isbn\n    publishYear\n    synopsis\n    genre\n    available\n    author { id name }\n  }\n}",
+                "variables": "{\n  \"input\": {\n    \"title\": \"O Hobbit\",\n    \"isbn\": \"9788533613484\",\n    \"publishYear\": 1937,\n    \"synopsis\": \"A aventura de Bilbo Bolseiro ao lado dos anões e do mago Gandalf.\",\n    \"genre\": \"FANTASY\",\n    \"authorId\": \"5\"\n  }\n}"
+              }
+            },
+            "url": { "raw": "{{baseUrl}}/graphql", "host": ["{{baseUrl}}"], "path": ["graphql"] },
+            "description": "Cria um novo livro. Campos obrigatórios: title, isbn (13 dígitos), publishYear, genre, authorId."
+          }
+        },
+        {
+          "name": "19 — Atualizar livro",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation UpdateBook($id: ID!, $input: UpdateBookInput!) {\n  updateBook(id: $id, input: $input) {\n    id\n    title\n    isbn\n    publishYear\n    synopsis\n    genre\n    available\n    author { id name }\n  }\n}",
+                "variables": "{\n  \"id\": \"6\",\n  \"input\": {\n    \"title\": \"O Senhor dos Anéis: A Sociedade do Anel\",\n    \"isbn\": \"9788533613379\",\n    \"publishYear\": 1954,\n    \"synopsis\": \"A épica jornada de Frodo Bolseiro para destruir o Um Anel nas chamas da Montanha da Perdição.\",\n    \"genre\": \"FANTASY\"\n  }\n}"
+              }
+            },
+            "url": { "raw": "{{baseUrl}}/graphql", "host": ["{{baseUrl}}"], "path": ["graphql"] },
+            "description": "Atualiza dados de um livro existente pelo ID."
+          }
+        },
+        {
+          "name": "20 — Excluir livro",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation DeleteBook($id: ID!) {\n  deleteBook(id: $id)\n}",
+                "variables": "{\n  \"id\": \"9\"\n}"
+              }
+            },
+            "url": { "raw": "{{baseUrl}}/graphql", "host": ["{{baseUrl}}"], "path": ["graphql"] },
+            "description": "Remove um livro pelo ID. Retorna true se removido com sucesso.\nAtenção: execute a mutation 'Criar livro' primeiro para criar o id=9."
+          }
+        },
+        {
+          "name": "21 — Criar empréstimo",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation CreateLoan($input: CreateLoanInput!) {\n  createLoan(input: $input) {\n    id\n    bookId\n    bookTitle\n    memberName\n    memberEmail\n    loanDate\n    expectedReturnDate\n    status\n  }\n}",
+                "variables": "{\n  \"input\": {\n    \"bookId\": \"4\",\n    \"memberName\": \"João Paulo Ferreira\",\n    \"memberEmail\": \"joao.ferreira@email.com\",\n    \"expectedReturnDate\": \"2026-06-15\"\n  }\n}"
+              }
+            },
+            "url": { "raw": "{{baseUrl}}/graphql", "host": ["{{baseUrl}}"], "path": ["graphql"] },
+            "description": "Cria um empréstimo. O livro deve estar disponível (available=true). bookId=4 é 'A Revolução dos Bichos'."
+          }
+        },
+        {
+          "name": "22 — Devolver livro",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation ReturnBook($loanId: ID!) {\n  returnBook(loanId: $loanId) {\n    id\n    bookTitle\n    memberName\n    loanDate\n    actualReturnDate\n    status\n  }\n}",
+                "variables": "{\n  \"loanId\": \"2\"\n}"
+              }
+            },
+            "url": { "raw": "{{baseUrl}}/graphql", "host": ["{{baseUrl}}"], "path": ["graphql"] },
+            "description": "Registra a devolução de um livro. Muda status para RETURNED e seta actualReturnDate."
+          }
+        },
+        {
+          "name": "23 — Cancelar empréstimo",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation CancelLoan($loanId: ID!) {\n  cancelLoan(loanId: $loanId) {\n    id\n    bookTitle\n    memberName\n    status\n  }\n}",
+                "variables": "{\n  \"loanId\": \"4\"\n}"
+              }
+            },
+            "url": { "raw": "{{baseUrl}}/graphql", "host": ["{{baseUrl}}"], "path": ["graphql"] },
+            "description": "Cancela um empréstimo ativo. Muda status para CANCELLED e libera o livro.\nAtenção: execute 'Criar empréstimo' primeiro para ter o loanId=4."
+          }
+        },
+        {
+          "name": "24 — Excluir empréstimo",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation DeleteLoan($id: ID!) {\n  deleteLoan(id: $id)\n}",
+                "variables": "{\n  \"id\": \"3\"\n}"
+              }
+            },
+            "url": { "raw": "{{baseUrl}}/graphql", "host": ["{{baseUrl}}"], "path": ["graphql"] },
+            "description": "Remove permanentemente um empréstimo pelo ID. Retorna true se removido."
+          }
+        }
+      ]
+    },
+    {
+      "name": "REST — Exportação",
+      "description": "Endpoints REST para exportação de dados em JSON e XML",
+      "item": [
+        {
+          "name": "25 — Exportar tudo (JSON + XML)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/export",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "export"]
+            },
+            "description": "Exporta todos os dados da biblioteca (autores, livros, empréstimos) em JSON e XML. Salva arquivos em exports/dados.json e exports/dados.xml. Retorna ambos os conteúdos no corpo da resposta."
+          }
+        },
+        {
+          "name": "26 — Exportar JSON",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/export/json",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "export", "json"]
+            },
+            "description": "Retorna todos os dados da biblioteca em formato JSON com indentação.\nContent-Type: application/json"
+          }
+        },
+        {
+          "name": "27 — Exportar XML",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/xml" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/export/xml",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "export", "xml"]
+            },
+            "description": "Retorna todos os dados da biblioteca em formato XML.\nContent-Type: application/xml"
+          }
+        }
+      ]
+    },
+    {
+      "name": "REST — Cliente GraphQL",
+      "description": "Endpoints REST que simulam um cliente externo consumindo o servidor GraphQL via HTTP",
+      "item": [
+        {
+          "name": "28 — Executar query arbitrária",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"query BookById($id: ID!) { bookById(id: $id) { id title isbn genre available author { id name } } }\",\n  \"variables\": { \"id\": \"3\" }\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/client/query",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "client", "query"]
+            },
+            "description": "Permite enviar qualquer query ou mutation GraphQL via REST. O servidor executa internamente usando o GraphQLClientService e retorna o campo 'data' da resposta GraphQL."
+          }
+        },
+        {
+          "name": "29 — Listar livros via cliente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/client/books",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "client", "books"]
+            },
+            "description": "Atalho REST que executa internamente a query GraphQL 'books' e retorna o resultado."
+          }
+        },
+        {
+          "name": "30 — Listar autores via cliente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/client/authors",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "client", "authors"]
+            },
+            "description": "Atalho REST que executa internamente a query GraphQL 'authors' e retorna o resultado."
+          }
+        },
+        {
+          "name": "31 — Listar empréstimos via cliente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/client/loans",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "client", "loans"]
+            },
+            "description": "Atalho REST que executa internamente a query GraphQL 'loans' e retorna o resultado."
+          }
+        }
+      ]
+    }
+  ]
+}

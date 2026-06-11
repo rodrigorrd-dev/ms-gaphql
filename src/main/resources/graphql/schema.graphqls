@@ -1,0 +1,146 @@
+scalar Date
+
+# ─── Types ───────────────────────────────────────────────────────────────────
+
+type Author {
+    id: ID!
+    name: String!
+    nationality: String!
+    birthDate: Date!
+    biography: String
+    email: String
+}
+
+type Book {
+    id: ID!
+    title: String!
+    isbn: String!
+    publishYear: Int!
+    synopsis: String
+    genre: Genre!
+    available: Boolean!
+    author: Author!
+}
+
+type Loan {
+    id: ID!
+    bookId: ID!
+    bookTitle: String!
+    memberName: String!
+    memberEmail: String!
+    loanDate: Date!
+    expectedReturnDate: Date!
+    actualReturnDate: Date
+    status: LoanStatus!
+}
+
+# ─── Enums ───────────────────────────────────────────────────────────────────
+
+enum Genre {
+    ROMANCE
+    SCIENCE_FICTION
+    FANTASY
+    MYSTERY
+    THRILLER
+    BIOGRAPHY
+    HISTORY
+    PHILOSOPHY
+    TECHNOLOGY
+    SELF_HELP
+    POETRY
+    CHILDREN
+}
+
+enum LoanStatus {
+    ACTIVE
+    RETURNED
+    OVERDUE
+    CANCELLED
+}
+
+# ─── Input Types ─────────────────────────────────────────────────────────────
+
+input CreateAuthorInput {
+    name: String!
+    nationality: String!
+    birthDate: Date!
+    biography: String
+    email: String
+}
+
+input UpdateAuthorInput {
+    name: String!
+    nationality: String!
+    birthDate: Date
+    biography: String
+    email: String
+}
+
+input CreateBookInput {
+    title: String!
+    isbn: String!
+    publishYear: Int!
+    synopsis: String
+    genre: Genre!
+    authorId: ID!
+}
+
+input UpdateBookInput {
+    title: String!
+    isbn: String!
+    publishYear: Int
+    synopsis: String
+    genre: Genre
+    authorId: ID
+}
+
+input CreateLoanInput {
+    bookId: ID!
+    memberName: String!
+    memberEmail: String!
+    expectedReturnDate: Date!
+}
+
+# ─── Queries ─────────────────────────────────────────────────────────────────
+
+type Query {
+    # Authors
+    authors: [Author!]!
+    authorById(id: ID!): Author
+    authorsByNationality(nationality: String!): [Author!]!
+
+    # Books
+    books: [Book!]!
+    bookById(id: ID!): Book
+    bookByIsbn(isbn: String!): Book
+    booksByGenre(genre: Genre!): [Book!]!
+    availableBooks: [Book!]!
+    booksByAuthor(authorId: ID!): [Book!]!
+
+    # Loans
+    loans: [Loan!]!
+    loanById(id: ID!): Loan
+    loansByMember(email: String!): [Loan!]!
+    loansByStatus(status: LoanStatus!): [Loan!]!
+    overdueLoans: [Loan!]!
+}
+
+# ─── Mutations ───────────────────────────────────────────────────────────────
+
+type Mutation {
+    # Author mutations
+    createAuthor(input: CreateAuthorInput!): Author!
+    updateAuthor(id: ID!, input: UpdateAuthorInput!): Author!
+    deleteAuthor(id: ID!): Boolean!
+
+    # Book mutations
+    createBook(input: CreateBookInput!): Book!
+    updateBook(id: ID!, input: UpdateBookInput!): Book!
+    deleteBook(id: ID!): Boolean!
+
+    # Loan mutations
+    createLoan(input: CreateLoanInput!): Loan!
+    returnBook(loanId: ID!): Loan!
+    cancelLoan(loanId: ID!): Loan!
+    deleteLoan(id: ID!): Boolean!
+}
